@@ -135,47 +135,12 @@ def plot_experiments():
         4: {"func": lambda n: 0.69 * (n ** 0.75), "label": r"$0.69 \cdot n^{3/4}$"}
     }
     
+    # For testing
     # n_values = [128, 256, 512, 1024, 2048, 4096] 
     n_values = [128, 256, 512, 1024, 2048, 4096, 8192, 16384, 32768]
     one_values = [128, 256, 512, 1024, 2048, 4096, 8192, 16384, 32768, 65536, 
                   131072, 262144]
     
-    # dims = [0, 1, 2, 3, 4] 
-    # results = {d: [] for d in dims}
-    
-    # for d in dims:
-    #     print(f"Processing Dimension {d}...")
-    #     if d == 1:
-    #         for n in one_values:
-    #             # Run 5 trials per N
-    #             avg = run_single_experiment(n, 5, d)
-    #             results[d].append(avg)
-    #             print(f"  N={n}: {avg:.4f}")
-    #         continue
-    #     for n in n_values:
-    #         # Run 5 trials per N
-    #         avg = run_single_experiment(n, 5, d)
-    #         results[d].append(avg)
-    #         print(f"  N={n}: {avg:.4f}")
-
-    # Plotting
-    # plt.figure(figsize=(10, 6))
-    # for d in dims:
-    #     if d == 1:
-    #         plt.plot(one_values, results[d], marker='o', label=f'Dim {d}')
-    #     else:
-    #         plt.plot(n_values, results[d], marker='o', label=f'Dim {d}')
-    
-    # plt.xlabel('Number of Points (n)')
-    # plt.ylabel('Average MST Weight')
-    # plt.title('MST Weight Scaling by Dimension')
-    # plt.legend()
-    # plt.grid(True)
-    # plt.xscale('log')
-    
-    # plt.savefig('mst_scaling.png')
-    # print("Plot saved to 'mst_scaling.png'")
-
     for d in range(5):
         print(f"Processing Dimension {d}...")
         x = one_values if d == 1 else n_values
