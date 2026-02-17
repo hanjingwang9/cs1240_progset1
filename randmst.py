@@ -2,6 +2,8 @@
 import sys
 import math
 import random
+import os
+from concurrent.futures import ProcessPoolExecutor, as_completed
 import matplotlib.pyplot as plt
 
 class UnionFind:
@@ -29,10 +31,11 @@ class UnionFind:
         return False
 
 
-def generate_mst_weight(n, dim):
+def generate_mst_weight(n, dim, seed=None):
     """Creates graph and finds MST weight."""
     
     # Graph generation
+    rng = random.Random(seed if seed is not None else (random.randrange(2**32) ^ os.getpid()))
     edges = []
     if dim == 0:
         # k(n) = 2 * log(n)/n
@@ -48,8 +51,7 @@ def generate_mst_weight(n, dim):
                 v = u ^ (1 << k)
                 if v > u and v < n:
                     w = random.uniform(0., 1.)
-                    if w < limit:
-                        edges.append((u, v, w))
+                    edges.append((u, v, w))
     elif dim in [2, 3, 4]:
         # k(n) = 1.25 * (log(n) / n) ^ 1/dim
         if dim == 2:
@@ -104,24 +106,24 @@ def generate_mst_weight(n, dim):
     return weight
 
 
-def run_single_experiment(n_points, n_trials, dimension):
+def run_single_experiment(n_points, n_trials, dimension, max_workers=None):
     """Runs single iteration of experiment."""
-    total_weight = 0
-    valid_trials = 0
-    
-    for _ in range(n_trials):
-        w = generate_mst_weight(n_points, dimension)
-        if w != -1:
-            total_weight += w
-            valid_trials += 1
-        else:
-            print(f"Warning: Trial failed for N={n_points} Dim={dimension}")
-        
-    
-    if valid_trials == 0:
-        return 0
-        
-    return total_weight / valid_trials
+    results = []
+    with ProcessPoolExecutor(max_workers=max_workers) as exe:
+        # Submit each trial with a fresh seed
+        futures = [exe.submit(generate_mst_weight, n_points, dimension, random.randrange(2**32)) for _ in range(n_trials)]
+        for fut in as_completed(futures):
+            try:
+                res = fut.result()
+            except Exception as e:
+                print("Trial raised exception:", e)
+                res = -1
+            results.append(res)
+
+    valid = [r for r in results if r != -1]
+    if not valid:
+        return 0.0
+    return sum(valid) / len(valid)
 
 
 def plot_experiments():

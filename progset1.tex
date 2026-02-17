@@ -141,6 +141,22 @@ $$n \cdot \sqrt[4]{1/n} = n \cdot n^{-1/4} = n^{3/4}.$$
 \subsection{Optimization using $k(n)$}
 We simply divide our $f(n)$ functions (without the experimentally determined constant) by $n$ and, after simplifying, change the numerator from $1$ to $\log n$ to ensure that we're not removing too many edges from each individual vertex. For dimension 1, that ends up being $1$, so we don't end up imposing a limit.
 
+Crucially, this will still lead to the correct MST when we run Kruskal's algorithm. This is because our algorithm sorts the edges by weight, so an edge with weight $w > k(n)$ would only be used if it were necessary to connect two components that couldn't be connected by cheaper edges. Our threshold almost guarantees that the included cheap edges already connect the entire graph, so more expensive edges would be discarded by Kruskal's anyway. Therefore, preemptively discarding them changes nothing about the final result, but drastically improves runtime of Kruskal's algorithm.
+
+\subsection{Asymptotic Runtime}
+\textbf{Graph Construction}
+
+For dimension 0, we visit every single pair regardless of edge weight and decide whether or not to discard it by comparing it to $k(n)$. This means that the worst-case time is equal to the expected time of $O(n^2)$. The threshold $k(n) = \frac{2 \log n}{n}$ ensures that the expected number of edges is $\frac{2 \log n}{n} \cdot O(n^2)$, or $M = O(n \log n)$.
+
+For dimension 1, we visit every vertex and for each, we iterate $\log n$ neighbors. This means that the worst-case time is equal to the expected time of $O(n\log n)$. Since this graph does not discard any edges, the total number of edges is $M = O(n\log n)$.
+
+For dimensions 2, 3, and 4, we sort the points and, for each point, iterate through its neighbors until the $x$-coordinate distances is greater than $k(n)$. The worst case here is $O(n^2)$, where we iterate through all of each vertex's neighbors.
+
+
+
+Our disjoint-set union-find data structure which implements both path compression and union by rank during \texttt{unite}. This ensures that the time complexity is $O(N)$ for each find.
+We know that Kruskal's algorithm runs in time $O(|E|\log|V|)$
+
 \section{Discussion}
 
 \end{document}
