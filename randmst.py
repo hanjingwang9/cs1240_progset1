@@ -42,16 +42,16 @@ def generate_mst_weight(n, dim, seed=None):
         limit = 2.0 * math.log(n, 2) / n
         for u in range(n):
             for v in range(u + 1, n):
-                w = random.uniform(0., 1.)
+                w = rng.uniform(0., 1.)
                 if w < limit:
                     edges.append((u, v, w))
     elif dim == 1:
         for u in range(n):
             for k in range(int(math.log2(n)) + 1):
-                v = u ^ (1 << k)
-                if v > u and v < n:
-                    w = random.uniform(0., 1.)
-                    edges.append((u, v, w))
+                v = u + (1 << k)
+                if v < n:
+                    edges.append((u, v, rng.uniform(0.0, 1.0)))
+
     elif dim in [2, 3, 4]:
         # k(n) = 1.25 * (log(n) / n) ^ 1/dim
         if dim == 2:
@@ -63,7 +63,7 @@ def generate_mst_weight(n, dim, seed=None):
             
         points = []
         for i in range(n):
-            coords = [random.uniform(0, 1) for _ in range(dim)]
+            coords = [rng.uniform(0, 1) for _ in range(dim)]
             points.append((i, coords))
         
         # Sort by coordinates
@@ -101,8 +101,9 @@ def generate_mst_weight(n, dim, seed=None):
             if count == n - 1:
                 break
     if count < n - 1:
-        # Bad
+        # Bad 
         return -1
+
     return weight
 
 
@@ -131,7 +132,7 @@ def plot_experiments():
     print("Running automated experiments...")
     configs = {
         0: {"func": lambda n: 1.202, "label": "1.202", "ylim": (0.1, 2.5)},
-        1: {"func": lambda n: 1.18 * (n / math.log2(n)) if n > 1 else 0, "label": r"$1.18 \cdot n / \log_2 n$"},
+        1: {"func": lambda n: 0.63 * (n / math.log2(n)) if n > 1 else 0, "label": r"$0.63 \cdot n / \log_2 n$"},
         2: {"func": lambda n: 0.65 * (n ** 0.5), "label": r"$0.65 \cdot \sqrt{n}$"},
         3: {"func": lambda n: 0.65 * (n ** (2/3)), "label": r"$0.65 \cdot n^{2/3}$"},
         4: {"func": lambda n: 0.69 * (n ** 0.75), "label": r"$0.69 \cdot n^{3/4}$"}
