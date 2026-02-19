@@ -4,7 +4,8 @@ import math
 import random
 import os
 from concurrent.futures import ProcessPoolExecutor, as_completed
-import matplotlib.pyplot as plt
+# plots commented out for autograder
+#import matplotlib.pyplot as plt
 
 class UnionFind:
     def __init__(self, n):
@@ -126,9 +127,8 @@ def run_single_experiment(n_points, n_trials, dimension, max_workers=None):
         return 0.0
     return sum(valid) / len(valid)
 
-
 def plot_experiments():
-    """Auto-runs trials for all dimensions and plots the results."""
+    #Auto-runs trials for all dimensions and plots the results.
     print("Running automated experiments...")
     configs = {
         0: {"func": lambda n: 1.202, "label": "1.202", "ylim": (0.1, 2.5)},
@@ -154,6 +154,8 @@ def plot_experiments():
             y.append(avg)
             print(f"  N={n}: {avg:.4f}")
 
+        #plots commented out for autograder
+        """
         plt.figure(figsize=(6, 4))
         plt.plot(x, y, marker='o', label="Experimental")
         theory_y = [config["func"](n) for n in x]
@@ -172,6 +174,7 @@ def plot_experiments():
         plt.savefig(filename, bbox_inches="tight")
         plt.close()
         print(f"Saved {filename}")
+        """
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
@@ -182,7 +185,7 @@ if __name__ == "__main__":
 
     if mode == 1:
         # For testing
-        plot_experiments()
+        plot_experiments() 
     else:
         if len(sys.argv) != 5:
             print("Usage: ./randmst 0 numpoints numtrials dimension")
